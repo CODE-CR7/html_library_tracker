@@ -891,6 +891,7 @@
             <nav class="nav" id="mainNav">
                 <button class="active" data-page="dashboard">📊 Dashboard</button>
                 <button data-page="catalog">📖 Catalog</button>
+                <button data-page="students">👥 Students</button>
                 <button data-page="transactions">🔄 Transactions</button>
                 <button data-page="reservations">📅 Reservations</button>
                 <button data-page="reports">📈 Reports</button>
@@ -1120,7 +1121,26 @@
                     </div>
                 </div>
             </div>
+            <!-- LIBRARIAN STUDENTS PAGE -->
+<div class="page" id="page-students">
+    <div class="card">
+        <div class="card-title">👥 Student Management</div>
 
+        <p>Total Students: <strong id="totalStudents">0</strong></p>
+
+        <input
+            type="text"
+            id="studentSearch"
+            placeholder="Search by name or admission number..."
+            oninput="renderStudentsPage()"
+            style="width:100%;margin-bottom:12px;"
+        >
+
+        <div id="studentsPageList">
+            No students found.
+        </div>
+    </div>
+</div>
         </div><!-- /main -->
         <!-- LIBRARIAN RESERVATIONS -->
 <div class="page" id="page-reservations">
@@ -1551,6 +1571,7 @@ if (savedStudent) {
                 // Render charts if reports
                 if (page === 'reports') renderReports();
                 if (page === 'catalog') renderCatalog();
+                if (page === 'students') renderStudentsPage();
                 if (page === 'transactions') renderTransactions();
                 if (page === 'reservations') renderAdminReservations();
                 if (page === 'dashboard') renderDashboard();
@@ -1949,6 +1970,51 @@ ${r.status === 'approved' ? `
             </div>
         `;
     }).join('');
+}
+function renderStudentsPage() {
+    const container = document.getElementById('studentsPageList');
+    const count = document.getElementById('totalStudents');
+    const search = document.getElementById('studentSearch');
+
+    if (!container) return;
+
+    count.textContent = state.students.length;
+
+    const query = search.value.trim().toLowerCase();
+
+    const filtered = state.students.filter(s =>
+        String(s.name || '').toLowerCase().includes(query) ||
+        String(s.id || '').toLowerCase().includes(query) ||
+        String(s.admissionNumber || '').toLowerCase().includes(query)
+    );
+
+    if (!filtered.length) {
+        container.innerHTML = 'No students found.';
+        return;
+    }
+
+    container.innerHTML = `
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>Admission Number</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${filtered.map(s => `
+                    <tr>
+                        <td>${s.admissionNumber || s.id}</td>
+                        <td>${s.name}</td>
+                        <td>${s.class || '-'}</td>
+                        <td>${s.phone || '-'}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
 }
 function renderDashboard() {
             const total = state.books.length;
