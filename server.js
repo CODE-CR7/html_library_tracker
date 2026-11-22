@@ -20,7 +20,10 @@ const jwt = require('jsonwebtoken');
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getAuth } = require('firebase-admin/auth');
 // Initialize Firebase Admin SDK
-const serviceAccount = require('./firebase-service-account.json');
+const serviceAccount = require(
+    process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||
+    './firebase-service-account.json'
+);
 
 initializeApp({
     credential: cert(serviceAccount)

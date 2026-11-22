@@ -1545,13 +1545,13 @@ const savedStudent = JSON.parse(
 
                     try {
                         const response = await fetch(
-                            'http://localhost:3000/api/student/me',
-                            {
-                                headers: {
-                                    'Authorization': 'Bearer ' + token
-                                }
-                            }
-                        );
+    'http://localhost:3000/api/student/login',
+    {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    }
+);
 
                         const result = await response.json();
 
